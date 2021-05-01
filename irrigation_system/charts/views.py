@@ -2,14 +2,33 @@ from django.shortcuts import render
 from django.views.generic import  TemplateView
 from django.http import JsonResponse, HttpResponse
 from .models import Chart
-#from .forms import DataSelectForm
-#import json
+import json
 import datetime
 
 # Create your views here.
 
 class HomeView(TemplateView):
     template_name = 'home.html'
+    #data_form = DataSelectForm
+
+    def post(self, request , **kwargs):
+        context = super().get_context_data(**kwargs)
+        hours = [(datetime.time(hour = int(i/4)).strftime('    %I   %p   ')) for i in range(96)]
+
+        humidity= Chart.objects.filter(name = "humidity").last()
+        light_intensity = Chart.objects.filter(name = "light_intensity").last()
+        air_temp = Chart.objects.filter(name = "air_temp").last()
+        soil_temp = Chart.objects.filter(name = "soil_temp").last()
+        time = hours         
+        context["qs"] = {"humidity":humidity,
+                   "light_intensity": light_intensity, 
+                   "air_temp": air_temp, 
+                   "soil_temp": soil_temp,
+                   "time": time}
+        return render(request, self.template_name, context )
+
+class ChartsView(TemplateView):
+    template_name = 'charts.html'
     #data_form = DataSelectForm
 
     def post(self, request , **kwargs):

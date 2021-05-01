@@ -1,0 +1,124 @@
+<!doctype html>
+{% extends 'base.html' %}
+
+
+
+{%block title %}
+Inteligent Irrigation System data
+{%endblock title %}
+
+{% block scripts %}
+
+    
+{{ qs.humidity|json_script:"humidity" }}
+{{ qs.light_intensity|json_script:"light_intensity"}}
+{{ qs.air_temp|json_script:"air_temp"}}
+{{ qs.soil_temp|json_script:"soil_temp"}}
+{{ qs.time|json_script:"time"}}
+
+
+<script>
+humidity = JSON.parse(document.getElementById("humidity").textContent);
+light_intensity = JSON.parse(document.getElementById("light_intensity").textContent);
+air_temp = JSON.parse(document.getElementById("air_temp").textContent);
+soil_temp = JSON.parse(document.getElementById("soil_temp").textContent);
+time = JSON.parse(document.getElementById("time").textContent);
+
+$(document).ready(function(){
+    var ctx = document.getElementById('humidityChart');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: time,
+            datasets: [{
+                label: 'Humidity [%]',
+                data: humidity,
+                backgroundColor : 'rgba(54, 162, 235, 0.6)',
+                borderColor: ['rgba(255, 99, 132, 1)',],
+                borderWidth: 2
+            }]
+        },
+    });
+    var ctx = document.getElementById('lightintensityChart');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: time,
+            datasets: [{
+                label: 'Light intensity [Lux]',
+                data: light_intensity,
+                backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2
+            }]
+        },
+    });
+    var ctx = document.getElementById('airtempChart');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: time,
+            datasets: [{
+                label: 'Air temperature [°C]',
+                data: air_temp,
+                backgroundColor : 'rgba(153, 102, 255, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2
+            }]
+        },
+    });
+    var ctx = document.getElementById('soiltempChart');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: time,
+            datasets: [{
+                label: 'Soil temperature [°C]',
+                data: soil_temp,
+                backgroundColor : 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2
+            }]
+        },
+    });
+});
+</script>
+
+
+{% endblock scripts %}
+
+{% block content %}
+<style>
+    #wrapper {
+        display: flex;
+    }
+    
+    #left {
+        flex: 1;
+    }
+
+    #right {
+        flex: 1;
+    }
+</style>
+
+<div id="wrapper">
+    <div id = "left">
+        <canvas id="humidityChart" width="200" height="100"></canvas>
+    </div>
+    <div id = "right">
+        <canvas id="lightintensityChart" width="200" height="100"></canvas>
+    </div>
+</div>
+<div id="wrapper">
+    <div id = "left">
+        <canvas id="airtempChart" width="200" height="100"></canvas>
+    </div>
+    <div id = "right">
+        <canvas id="soiltempChart" width="200" height="100"></canvas>
+    </div>
+</div>
+
+
+
+{% endblock content %}
